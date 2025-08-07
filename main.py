@@ -1,10 +1,43 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
+import sys
+
 from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtWidgets import (
+  QApplication, 
+  QMainWindow, 
+  QGridLayout,
+  QWidget,
+  QPushButton,
+  QSpinBox,
+  QLabel,
+  QLCDNumber,
+  QProgressBar,
+  )
 
 class MainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
 
     self.setWindowTitle("MineSweeper")
+    self.setFixedSize(QSize(600,500))
 
-    button = QPushButton
+    layout = QGridLayout()
+
+    gameBoardWidth = 5
+    gameBoardHeight = 6
+
+    # gameBoard = QLabel()
+    # gameBoard.setFixedSize(QSize(400,300))
+    for i in range(gameBoardHeight):
+      for j in range(gameBoardWidth):
+        layout.addWidget(QPushButton(f"{i},{j}"), i, j)
+    
+    widget = QWidget()
+    widget.setLayout(layout)
+    self.setCentralWidget(widget)
+
+app = QApplication(sys.argv)
+
+window = MainWindow()
+window.show()
+
+app.exec()
