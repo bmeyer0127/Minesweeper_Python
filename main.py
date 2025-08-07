@@ -1,5 +1,7 @@
 import sys
 
+from MinesweeperButton import TileButton
+
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import (
   QApplication, 
@@ -25,11 +27,10 @@ class MainWindow(QMainWindow):
     gameBoardWidth = 5
     gameBoardHeight = 6
 
-    # gameBoard = QLabel()
-    # gameBoard.setFixedSize(QSize(400,300))
+
     for i in range(gameBoardHeight):
       for j in range(gameBoardWidth):
-        layout.addWidget(QPushButton(f"{i},{j}"), i, j)
+        layout.addWidget(TileButton(j,i).getTileButton(), i, j)
     
     widget = QWidget()
     widget.setLayout(layout)
