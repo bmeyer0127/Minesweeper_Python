@@ -5,8 +5,10 @@ from MinesweeperButton import TileButton
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import (
   QApplication, 
-  QMainWindow, 
+  QMainWindow,
   QGridLayout,
+  QHBoxLayout,
+  QVBoxLayout,
   QWidget,
   QPushButton,
   QSpinBox,
@@ -22,18 +24,24 @@ class MainWindow(QMainWindow):
     self.setWindowTitle("MineSweeper")
     self.setFixedSize(QSize(600,500))
 
-    layout = QGridLayout()
+    widget = QWidget()
+
+    gridLayout = QGridLayout()
 
     gameBoardWidth = 5
     gameBoardHeight = 6
 
+    self.tileButtons = []
 
     for i in range(gameBoardHeight):
       for j in range(gameBoardWidth):
-        layout.addWidget(TileButton(j,i).getTileButton(), i, j)
+        tileButton = TileButton(j,i)
+        self.tileButtons.append(tileButton)
+        gridLayout.addWidget(tileButton.getTileButton(), (i), (j))
     
-    widget = QWidget()
-    widget.setLayout(layout)
+    gridLayout.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
+
+    widget.setLayout(gridLayout)
     self.setCentralWidget(widget)
 
 app = QApplication(sys.argv)
