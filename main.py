@@ -30,7 +30,6 @@ class MainWindow(QMainWindow):
 
     for i in range(gameBoardHeight):
       for j in range(gameBoardWidth):
-        # tileButton = TileButton(j,i)
         tileButton = CustomButton(j,i)
         tileNumber = TileNumber(j,i)
         self.tileButtons.append(tileButton)

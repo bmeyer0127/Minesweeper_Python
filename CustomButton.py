@@ -6,6 +6,7 @@ class CustomButton(QPushButton):
   def __init__(self, x_pos, y_pos):
     super().__init__()
     self.flagIcon = QPixmap("assets/flag.svg")
+    self.hasFlag = False
 
     self.x_pos = x_pos
     self.y_pos = y_pos
@@ -17,14 +18,20 @@ class CustomButton(QPushButton):
 
   def mousePressEvent(self, event):
     if event.button() == Qt.MouseButton.LeftButton:
+      if self.hasFlag:
+        return
       print("left")
       self.revealTile()
     elif event.button() == Qt.MouseButton.RightButton:
       print("right")
-      self.setFlag()
+      self.toggleFlag()
 
   def revealTile(self):
     self.deleteLater()
 
-  def setFlag(self):
-    self.setIcon(QIcon(self.flagIcon))
+  def toggleFlag(self):
+    self.hasFlag = not self.hasFlag
+    if self.hasFlag:
+      self.setIcon(QIcon(self.flagIcon))
+    else:
+      self.setIcon(QIcon(None))
