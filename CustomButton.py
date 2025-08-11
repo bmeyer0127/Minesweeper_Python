@@ -10,7 +10,6 @@ class CustomButton(QPushButton):
 
     self.x_pos = x_pos
     self.y_pos = y_pos
-    self.setText(f"{self.x_pos}, {self.y_pos}")
     self.setFixedSize(50,50)
 
   def getTileButton(self):
