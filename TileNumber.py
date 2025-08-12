@@ -1,4 +1,5 @@
 from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import (
   QWidget,
   QLCDNumber,
@@ -12,14 +13,15 @@ class TileNumber:
     self.y_pos = y_pos
     self.adjacentBombs = adjacentBombs
     self.isBomb = isBomb
-
-    # self.tileNumber = QLCDNumber()
     self.tileNumber = QLabel()
+    self.tileNumber.setObjectName("tileNumber")
+    self.tileNumber.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
   def getTileNumber(self):
+    self.tileNumber.setText(None)
     if self.isBomb:
       self.tileNumber.setText("BOMB")
-    else:
+    elif not self.isBomb:
       self.tileNumber.setText(f"{self.adjacentBombs}")
     self.tileNumber.setFixedSize(50,50)
     return self.tileNumber

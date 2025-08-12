@@ -1,5 +1,6 @@
 import sys
 from PyQt6.QtCore import Qt, QSize
+from pathlib import Path
 from PyQt6.QtWidgets import (
   QApplication, 
   QMainWindow,
@@ -17,6 +18,7 @@ from CustomButton import CustomButton
 class MainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
+    bombCoordinates = []
 
     self.setWindowTitle("MineSweeper")
     # self.setFixedSize(QSize(600,500))
@@ -28,15 +30,18 @@ class MainWindow(QMainWindow):
     self.tileNumbers = []
     self.numberCoordinates = []
     self.bombCoordinates = []
-    numberOfBombs = 5
-    gameBoardWidth = 8
-    gameBoardHeight = 8
+    numberOfBombs = 20
+    gameBoardWidth = 10
+    gameBoardHeight = 10
+    self.possibleCoordinates = []
+
+    # Create possible coordinates for bombs to take sample of
+    for i in range(gameBoardHeight):
+      for j in range(gameBoardWidth):
+        self.possibleCoordinates.append([j,i])
 
     # Create bomb coordinates
-    for i in range(numberOfBombs):
-      xCoordinate = random.randint(0,gameBoardWidth-1)
-      yCoordinate = random.randint(0,gameBoardHeight-1)
-      self.bombCoordinates.append([xCoordinate, yCoordinate])
+    self.bombCoordinates = random.sample(self.possibleCoordinates, numberOfBombs)
     
     # Create Bombs
     for i in range(len(self.bombCoordinates)):
@@ -48,24 +53,28 @@ class MainWindow(QMainWindow):
     for i in range(gameBoardHeight):
       for j in range(gameBoardWidth):
         adjacentBombs = 0
-        for bomb in self.bombCoordinates:
-          if (i-1 == bomb[1] or i+1 == bomb[1] or i == bomb[1]) and (j-1 == bomb[0] or j+1 == bomb[0] or j == bomb[0]): 
-            adjacentBombs += 1
-        tileButton = CustomButton(j,i)
-        tileNumber = TileNumber(j,i,adjacentBombs)
+        if ([j,i] not in self.bombCoordinates):
+          for bomb in self.bombCoordinates:
+            if (i-1 == bomb[1] or i+1 == bomb[1] or i == bomb[1]) and (j-1 == bomb[0] or j+1 == bomb[0] or j == bomb[0]): 
+              adjacentBombs += 1
+          # tileButton = CustomButton(j,i)
+          tileNumber = TileNumber(j,i,adjacentBombs)
+          # self.tileButtons.append(tileButton)
+          self.tileNumbers.append(tileNumber)
+          gridLayout.addWidget(tileNumber.getTileNumber(), (i), (j))
+          # gridLayout.addWidget(tileButton.getTileButton(), (i), (j))
+        tileButton = CustomButton(j,i,self.bombCoordinates)
         self.tileButtons.append(tileButton)
-        self.tileNumbers.append(tileNumber)
-        gridLayout.addWidget(tileNumber.getTileNumber(), (i), (j))
         gridLayout.addWidget(tileButton.getTileButton(), (i), (j))
+
     
     gridLayout.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
 
     widget.setLayout(gridLayout)
     self.setCentralWidget(widget)
-    for bomb in self.bombCoordinates:
-      print(bomb)
 
 app = QApplication(sys.argv)
+app.setStyleSheet(Path('assets/styles/Styles.qss').read_text())
 
 window = MainWindow()
 window.show()

@@ -1,0 +1,16 @@
+
+MainWindow {
+  background-color: #D1D8BE;
+}
+
+#customButton {
+  background-color: #A7C1A8;
+}
+
+#customButton:hover {
+  background-color: #819A91;
+}
+
+#tileNumber {
+  text-align: center;
+}
