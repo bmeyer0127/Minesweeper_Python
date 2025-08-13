@@ -1,10 +1,14 @@
-
 MainWindow {
   background-color: #D1D8BE;
 }
 
 #customButton {
   background-color: #A7C1A8;
+  max-height: 20px;
+  max-width: 20px;
+  min-height: 20px;
+  min-width: 20px;
+  border: none;
 }
 
 #customButton:hover {
@@ -12,5 +16,27 @@ MainWindow {
 }
 
 #tileNumber {
-  text-align: center;
+  max-height: 20px;
+  max-width: 20px;
+  min-height: 20px;
+  min-width: 20px;
+}
+
+#numberOfBombsDisplay {
+  max-height: 50px;
+  max-width: 100px;
+  background-color: #D1D8BE;
+  color: #819A91;
+  font-size: 20px;
+  border: 2px solid #819A91;
+  border-radius: 10px;
+}
+
+#timer {
+  max-height: 50px;
+  max-width: 100px;
+  background-color: #D1D8BE;
+  color: #819A91;
+  border: 2px solid #819A91;
+  border-radius: 10px;
 }

@@ -12,7 +12,7 @@ class CustomButton(QPushButton):
     self.x_pos = x_pos
     self.y_pos = y_pos
     self.bombCoordinates = bombCoordinates
-    self.setFixedSize(50,50)
+    # self.setFixedSize(80,80)
     self.setObjectName("customButton")
 
   def getTileButton(self):
@@ -27,11 +27,8 @@ class CustomButton(QPushButton):
 
   def revealTile(self, bombCoordinates):
     self.deleteLater()
-    print("poop")
-    print(bombCoordinates)
     for coord in bombCoordinates:
       if self.x_pos == coord[0] and self.y_pos == coord[1]:
-        print(f"x:{self.x_pos}, y:{self.y_pos}, bombx:{coord[0]}, bomby:{coord[1]}")
         print("Mega death")
 
   def toggleFlag(self):

@@ -15,13 +15,15 @@ class TileNumber:
     self.isBomb = isBomb
     self.tileNumber = QLabel()
     self.tileNumber.setObjectName("tileNumber")
-    self.tileNumber.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    # self.tileNumber.setFixedSize(80,80)
+    self.tileNumber.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
 
   def getTileNumber(self):
     self.tileNumber.setText(None)
     if self.isBomb:
-      self.tileNumber.setText("BOMB")
+      # self.tileNumber.setText("BOMB")
+      self.tileNumber.setPixmap(self.bombIcon)
+
     elif not self.isBomb:
       self.tileNumber.setText(f"{self.adjacentBombs}")
-    self.tileNumber.setFixedSize(50,50)
     return self.tileNumber

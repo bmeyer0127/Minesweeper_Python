@@ -1,6 +1,10 @@
 import sys
-from PyQt6.QtCore import Qt, QSize
-from pathlib import Path
+from PyQt6.QtCore import (
+  Qt, 
+  QSize,
+  QTime,
+  QTimer
+)
 from PyQt6.QtWidgets import (
   QApplication, 
   QMainWindow,
@@ -8,9 +12,11 @@ from PyQt6.QtWidgets import (
   QHBoxLayout,
   QVBoxLayout,
   QWidget,
+  QLabel,
   QPushButton,
   QLCDNumber,
   )
+from pathlib import Path
 import random
 from TileNumber import TileNumber
 from CustomButton import CustomButton
@@ -21,11 +27,13 @@ class MainWindow(QMainWindow):
     bombCoordinates = []
 
     self.setWindowTitle("MineSweeper")
-    # self.setFixedSize(QSize(600,500))
+    self.setFixedSize(QSize(600,500))
 
     widget = QWidget()
+    gameBoardWidget = QWidget()
     gridLayout = QGridLayout()
     horizLayout = QHBoxLayout()
+    vertLayout = QVBoxLayout()
     self.tileButtons = []
     self.tileNumbers = []
     self.numberCoordinates = []
@@ -34,6 +42,27 @@ class MainWindow(QMainWindow):
     gameBoardWidth = 10
     gameBoardHeight = 10
     self.possibleCoordinates = []
+
+    # Number of bombs display widget
+    numberOfBombsDisplay = QLabel()
+    numberOfBombsDisplay.setText(f"{numberOfBombs} left")
+    numberOfBombsDisplay.setObjectName("numberOfBombsDisplay")
+    numberOfBombsDisplay.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+    # Create timer
+    timer = QTimer(widget)
+    timer.timeout.connect(updateTimer)
+
+    # Timer Widget
+    timerWidget = QLCDNumber()
+    timerWidget.setObjectName("timer")
+    # timerWidget.display("5233")
+    timerWidget.setSegmentStyle(QLCDNumber.SegmentStyle.Filled)
+
+    # Update timer
+    def updateTimer():
+      currentTime = QTime.currentTime()
+      timerWidget.display(currentTime.toString('HH:mm:ss'))
 
     # Create possible coordinates for bombs to take sample of
     for i in range(gameBoardHeight):
@@ -57,20 +86,22 @@ class MainWindow(QMainWindow):
           for bomb in self.bombCoordinates:
             if (i-1 == bomb[1] or i+1 == bomb[1] or i == bomb[1]) and (j-1 == bomb[0] or j+1 == bomb[0] or j == bomb[0]): 
               adjacentBombs += 1
-          # tileButton = CustomButton(j,i)
           tileNumber = TileNumber(j,i,adjacentBombs)
-          # self.tileButtons.append(tileButton)
           self.tileNumbers.append(tileNumber)
           gridLayout.addWidget(tileNumber.getTileNumber(), (i), (j))
-          # gridLayout.addWidget(tileButton.getTileButton(), (i), (j))
         tileButton = CustomButton(j,i,self.bombCoordinates)
         self.tileButtons.append(tileButton)
         gridLayout.addWidget(tileButton.getTileButton(), (i), (j))
 
-    
     gridLayout.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
+    vertLayout.setAlignment(Qt.AlignmentFlag.AlignRight)
 
-    widget.setLayout(gridLayout)
+    horizLayout.addWidget(numberOfBombsDisplay)
+    horizLayout.addWidget(timerWidget)
+    vertLayout.addLayout(horizLayout)
+    vertLayout.addLayout(gridLayout)
+    # vertLayout.addLayout(horizLayout)
+    widget.setLayout(vertLayout)
     self.setCentralWidget(widget)
 
 app = QApplication(sys.argv)
