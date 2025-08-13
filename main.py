@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
   QGridLayout,
   QHBoxLayout,
   QVBoxLayout,
+  QStackedLayout,
   QWidget,
   QLabel,
   QPushButton,
@@ -24,23 +25,24 @@ from CustomButton import CustomButton
 class MainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
-    bombCoordinates = []
-
     self.setWindowTitle("MineSweeper")
     self.setFixedSize(QSize(600,500))
 
     widget = QWidget()
-    gameBoardWidget = QWidget()
     gridLayout = QGridLayout()
     horizLayout = QHBoxLayout()
     vertLayout = QVBoxLayout()
+    self.startButtons = []
+    self.time = QTime(0,0,0)
+    self.timer = QTimer()
+    self.timerWidget = QLCDNumber()
     self.tileButtons = []
     self.tileNumbers = []
     self.numberCoordinates = []
     self.bombCoordinates = []
     numberOfBombs = 20
-    gameBoardWidth = 10
-    gameBoardHeight = 10
+    self.gameBoardWidth = 10
+    self.gameBoardHeight = 10
     self.possibleCoordinates = []
 
     # Number of bombs display widget
@@ -49,24 +51,17 @@ class MainWindow(QMainWindow):
     numberOfBombsDisplay.setObjectName("numberOfBombsDisplay")
     numberOfBombsDisplay.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-    # Create timer
-    timer = QTimer(widget)
-    timer.timeout.connect(updateTimer)
+    # Update timer
+    self.timer.timeout.connect(self.updateTimer)
+    self.timerWidget.display(self.time.toString('mm:ss'))
 
     # Timer Widget
-    timerWidget = QLCDNumber()
-    timerWidget.setObjectName("timer")
-    # timerWidget.display("5233")
-    timerWidget.setSegmentStyle(QLCDNumber.SegmentStyle.Filled)
-
-    # Update timer
-    def updateTimer():
-      currentTime = QTime.currentTime()
-      timerWidget.display(currentTime.toString('HH:mm:ss'))
+    self.timerWidget.setObjectName("timer")
+    self.timerWidget.setSegmentStyle(QLCDNumber.SegmentStyle.Filled)
 
     # Create possible coordinates for bombs to take sample of
-    for i in range(gameBoardHeight):
-      for j in range(gameBoardWidth):
+    for i in range(self.gameBoardHeight):
+      for j in range(self.gameBoardWidth):
         self.possibleCoordinates.append([j,i])
 
     # Create bomb coordinates
@@ -79,8 +74,8 @@ class MainWindow(QMainWindow):
       gridLayout.addWidget(tileNumber.getTileNumber(), (tileNumber.y_pos), (tileNumber.x_pos))
 
     # Create number tiles and buttons
-    for i in range(gameBoardHeight):
-      for j in range(gameBoardWidth):
+    for i in range(self.gameBoardHeight):
+      for j in range(self.gameBoardWidth):
         adjacentBombs = 0
         if ([j,i] not in self.bombCoordinates):
           for bomb in self.bombCoordinates:
@@ -92,17 +87,35 @@ class MainWindow(QMainWindow):
         tileButton = CustomButton(j,i,self.bombCoordinates)
         self.tileButtons.append(tileButton)
         gridLayout.addWidget(tileButton.getTileButton(), (i), (j))
+        tileButton.clicked.connect(self.tileClick)
 
     gridLayout.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
     vertLayout.setAlignment(Qt.AlignmentFlag.AlignRight)
 
     horizLayout.addWidget(numberOfBombsDisplay)
-    horizLayout.addWidget(timerWidget)
+    horizLayout.addWidget(self.timerWidget)
     vertLayout.addLayout(horizLayout)
     vertLayout.addLayout(gridLayout)
-    # vertLayout.addLayout(horizLayout)
     widget.setLayout(vertLayout)
     self.setCentralWidget(widget)
+
+  # Read tile click
+  def tileClick(self):
+    if (len(self.tileButtons) == self.gameBoardHeight * self.gameBoardWidth):
+      self.startGame()
+    clickedButton = self.sender()
+    clickedButton.deleteLater()
+    self.tileButtons.remove(clickedButton)
+
+  # Start timer
+  def startGame(self):
+    self.timer.start(1000)
+
+  # Update timer
+  def updateTimer(self):
+    self.time = self.time.addSecs(1)
+    self.timerWidget.display(self.time.toString('mm:ss'))
+    
 
 app = QApplication(sys.argv)
 app.setStyleSheet(Path('assets/styles/Styles.qss').read_text())

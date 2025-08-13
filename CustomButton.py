@@ -12,21 +12,22 @@ class CustomButton(QPushButton):
     self.x_pos = x_pos
     self.y_pos = y_pos
     self.bombCoordinates = bombCoordinates
-    # self.setFixedSize(80,80)
     self.setObjectName("customButton")
 
   def getTileButton(self):
     return self
 
   def mousePressEvent(self, event):
+    super().mousePressEvent(event)
     if event.button() == Qt.MouseButton.LeftButton:
       if not self.hasFlag:
         self.revealTile(self.bombCoordinates)
     elif event.button() == Qt.MouseButton.RightButton:
       self.toggleFlag()
 
+
   def revealTile(self, bombCoordinates):
-    self.deleteLater()
+
     for coord in bombCoordinates:
       if self.x_pos == coord[0] and self.y_pos == coord[1]:
         print("Mega death")
