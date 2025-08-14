@@ -1,9 +1,11 @@
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap
-import time
 
 class CustomButton(QPushButton):
+  leftClicked = pyqtSignal()
+  rightClicked = pyqtSignal()
+
   def __init__(self, x_pos, y_pos, bombCoordinates):
     super().__init__()
     self.flagIcon = QPixmap("assets/flag.svg")
@@ -22,12 +24,12 @@ class CustomButton(QPushButton):
     if event.button() == Qt.MouseButton.LeftButton:
       if not self.hasFlag:
         self.revealTile(self.bombCoordinates)
+        self.leftClicked.emit()
     elif event.button() == Qt.MouseButton.RightButton:
       self.toggleFlag()
-
+      self.rightClicked.emit()
 
   def revealTile(self, bombCoordinates):
-
     for coord in bombCoordinates:
       if self.x_pos == coord[0] and self.y_pos == coord[1]:
         print("Mega death")

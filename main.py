@@ -36,20 +36,21 @@ class MainWindow(QMainWindow):
     self.time = QTime(0,0,0)
     self.timer = QTimer()
     self.timerWidget = QLCDNumber()
+    self.numberOfBombsDisplay = QLabel()
     self.tileButtons = []
     self.tileNumbers = []
     self.numberCoordinates = []
     self.bombCoordinates = []
-    numberOfBombs = 20
+    self.numberOfBombs = 20
+    self.numberOfBombsLeft = self.numberOfBombs
     self.gameBoardWidth = 10
     self.gameBoardHeight = 10
     self.possibleCoordinates = []
 
     # Number of bombs display widget
-    numberOfBombsDisplay = QLabel()
-    numberOfBombsDisplay.setText(f"{numberOfBombs} left")
-    numberOfBombsDisplay.setObjectName("numberOfBombsDisplay")
-    numberOfBombsDisplay.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    self.numberOfBombsDisplay.setText(f"{self.numberOfBombsLeft} left")
+    self.numberOfBombsDisplay.setObjectName("numberOfBombsDisplay")
+    self.numberOfBombsDisplay.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     # Update timer
     self.timer.timeout.connect(self.updateTimer)
@@ -65,7 +66,7 @@ class MainWindow(QMainWindow):
         self.possibleCoordinates.append([j,i])
 
     # Create bomb coordinates
-    self.bombCoordinates = random.sample(self.possibleCoordinates, numberOfBombs)
+    self.bombCoordinates = random.sample(self.possibleCoordinates, self.numberOfBombs)
     
     # Create Bombs
     for i in range(len(self.bombCoordinates)):
@@ -87,25 +88,32 @@ class MainWindow(QMainWindow):
         tileButton = CustomButton(j,i,self.bombCoordinates)
         self.tileButtons.append(tileButton)
         gridLayout.addWidget(tileButton.getTileButton(), (i), (j))
-        tileButton.clicked.connect(self.tileClick)
+        tileButton.leftClicked.connect(self.leftTileClick)
+        tileButton.rightClicked.connect(self.rightTileClick)
 
     gridLayout.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
     vertLayout.setAlignment(Qt.AlignmentFlag.AlignRight)
 
-    horizLayout.addWidget(numberOfBombsDisplay)
+    horizLayout.addWidget(self.numberOfBombsDisplay)
     horizLayout.addWidget(self.timerWidget)
     vertLayout.addLayout(horizLayout)
     vertLayout.addLayout(gridLayout)
     widget.setLayout(vertLayout)
     self.setCentralWidget(widget)
 
-  # Read tile click
-  def tileClick(self):
+  # Read left tile click
+  def leftTileClick(self):
+    print("left tile click")
     if (len(self.tileButtons) == self.gameBoardHeight * self.gameBoardWidth):
       self.startGame()
     clickedButton = self.sender()
     clickedButton.deleteLater()
     self.tileButtons.remove(clickedButton)
+
+  # Read right tile click
+  def rightTileClick(self):
+    self.numberOfBombsLeft -= 1
+    self.numberOfBombsDisplay.setText(f"{self.numberOfBombsLeft} left")
 
   # Start timer
   def startGame(self):
