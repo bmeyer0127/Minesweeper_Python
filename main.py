@@ -104,24 +104,24 @@ class MainWindow(QMainWindow):
 
       gridLayout.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
 
-      leftButtonLayout = QVBoxLayout()
-      leftButtonLayout.addWidget(self.resetButton)
-      leftButtonLayout.addWidget(self.exitButton)
-      leftButtonLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
+      self.leftButtonLayout = QVBoxLayout()
+      self.leftButtonLayout.addWidget(self.resetButton)
+      self.leftButtonLayout.addWidget(self.exitButton)
+      self.leftButtonLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
-      topDisplayLayout = QHBoxLayout()
-      topDisplayLayout.addWidget(self.numberOfBombsDisplay)
-      topDisplayLayout.addWidget(self.timerWidget)
+      self.topDisplayLayout = QHBoxLayout()
+      self.topDisplayLayout.addWidget(self.numberOfBombsDisplay)
+      self.topDisplayLayout.addWidget(self.timerWidget)
 
-      rightSideLayout = QVBoxLayout()
-      rightSideLayout.addLayout(topDisplayLayout)
-      rightSideLayout.addLayout(gridLayout)
+      self.rightSideLayout = QVBoxLayout()
+      self.rightSideLayout.addLayout(self.topDisplayLayout)
+      self.rightSideLayout.addLayout(gridLayout)
 
-      mainLayout = QHBoxLayout()
-      mainLayout.addLayout(leftButtonLayout)
-      mainLayout.addLayout(rightSideLayout)
+      self.mainLayout = QHBoxLayout()
+      self.mainLayout.addLayout(self.leftButtonLayout)
+      self.mainLayout.addLayout(self.rightSideLayout)
 
-      widget.setLayout(mainLayout)
+      widget.setLayout(self.mainLayout)
       self.setCentralWidget(widget)
 
     gameSetup()
@@ -153,6 +153,9 @@ class MainWindow(QMainWindow):
     self.time = self.time.addSecs(1)
     self.timerWidget.display(self.time.toString('mm:ss'))
     
+  # End game either on bomb click or all non-bomb tiles cleared
+  def endGame(self):
+    print("endGame")
   
 
 app = QApplication(sys.argv)
